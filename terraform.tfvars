@@ -1,4 +1,4 @@
-CLUSTER_NAME = "fiap-cluster"
+CLUSTER_NAME = "fiap-rds-database"
 NOME_REPOSITORIO = "producao"
 REGION = "us-east-1"
 CLUSTER_IDENTIFIER = "rds-cluster-fiap-b"

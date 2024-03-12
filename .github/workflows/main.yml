@@ -82,6 +82,17 @@ jobs:
         aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         aws-region: ${{ vars.AWS_REGION }}
 
+    - name: Set Environment Variables
+      run: |
+        export TF_VAR_CLUSTER_NAME=${{ vars.CLUSTER_NAME }}
+        export TF_VAR_NOME_REPOSITORIO=${{ vars.NOME_REPOSITORIO }}
+        export TF_VAR_REGION=${{ vars.REGION }}
+        export TF_VAR_CLUSTER_IDENTIFIER=${{ vars.CLUSTER_IDENTIFIER }}
+        export TF_VAR_DB_DATABASE=${{ vars.DB_DATABASE }}
+        export TF_VAR_DB_USERNAME=${{ vars.DB_USERNAME }}
+        export TF_VAR_DB_PASSWORD=${{ secrets.CLUSTER_NAME }}
+        export TF_VAR_DB_PORT=${{ vars.DB_PORT }}
+
     # Initialize a new or existing Terraform working directory by creating initial files, loading any remote state, downloading modules, etc.
     - name: Terraform Init
       run: terraform init
@@ -89,28 +100,9 @@ jobs:
     # Generates an execution plan for Terraform
     - name: Terraform Plan
       run: terraform plan -input=false
-      env:
-        CLUSTER_NAME : ${{ vars.CLUSTER_NAME }}
-        NOME_REPOSITORIO  : ${{ vars.NOME_REPOSITORIO }}
-        REGION  : ${{ vars.REGION }}
-        CLUSTER_IDENTIFIER  : ${{ vars.CLUSTER_IDENTIFIER }}
-        DB_DATABASE  : ${{ vars.DB_DATABASE }}
-        DB_USERNAME  : ${{ vars.DB_USERNAME }}
-        DB_PASSWORD   : ${{ secrets.CLUSTER_NAME }}
-        DB_PORT : ${{ vars.DB_PORT }}
 
       # On push to "main", build or change infrastructure according to Terraform configuration files
       # Note: It is recommended to set up a required "strict" status check in your repository for "Terraform Cloud". See the documentation on "strict" required status checks for more information: https://help.github.com/en/github/administering-a-repository/types-of-required-status-checks
     - name: Terraform Apply
       if: github.ref == 'refs/heads/"main"' && github.event_name == 'push'
       run: terraform apply -auto-approve -input=false
-      env:
-        CLUSTER_NAME : ${{ vars.CLUSTER_NAME }}
-        NOME_REPOSITORIO  : ${{ vars.NOME_REPOSITORIO }}
-        REGION  : ${{ vars.REGION }}
-        CLUSTER_IDENTIFIER  : ${{ vars.CLUSTER_IDENTIFIER }}
-        DB_DATABASE  : ${{ vars.DB_DATABASE }}
-        DB_USERNAME  : ${{ vars.DB_USERNAME }}
-        DB_PASSWORD   : ${{ secrets.CLUSTER_NAME }}
-        DB_PORT : ${{ vars.DB_PORT }}
-      
